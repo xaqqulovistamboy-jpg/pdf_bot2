@@ -1,0 +1,12 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.env
+
+# Vaqtinchalik fayllar
+temp/
+*.pdf
+*.jpg
