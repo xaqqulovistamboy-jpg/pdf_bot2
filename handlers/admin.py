@@ -1,6 +1,6 @@
 import asyncio
 from aiogram import Router, F
-from aiogram.filters import Command
+from aiogram.filters import Command, CommandObject
 from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 from database.db import Database
@@ -49,6 +49,44 @@ async def callback_admin_stats(callback: CallbackQuery, db: Database, user_setti
         stats_text,
         reply_markup=get_admin_keyboard(),
         parse_mode="Markdown"
+    )
+    await callback.answer()
+
+@router.message(Command("users"))
+async def cmd_users(message: Message, db: Database, user_settings: dict):
+    """Foydalanuvchilar sonini ko'rish buyrug'i (faqat adminlar uchun)"""
+    user_id = message.from_user.id
+    if not is_user_admin(user_id, user_settings):
+        await message.answer("❌ Kechirasiz, bu buyruq faqat bot adminlari uchun.")
+        return
+
+    stats = await db.get_stats()
+    total = stats['total_users']
+    mau = stats['monthly_active_users']
+
+    await message.answer(
+        f"👥 <b>Botdagi foydalanuvchilar:</b>\n\n"
+        f"📌 Jami ro'yxatdan o'tganlar: <b>{total} ta</b>\n"
+        f"📅 So'nggi 30 kunda faol: <b>{mau} ta</b>"
+    )
+
+@router.callback_query(F.data == "admin_users_count")
+async def callback_admin_users_count(callback: CallbackQuery, db: Database, user_settings: dict):
+    """Admin panel orqali foydalanuvchilar sonini ko'rish"""
+    user_id = callback.from_user.id
+    if not is_user_admin(user_id, user_settings):
+        await callback.answer("Ruxsat berilmagan!", show_alert=True)
+        return
+
+    stats = await db.get_stats()
+    total = stats['total_users']
+    mau = stats['monthly_active_users']
+
+    await callback.message.edit_text(
+        f"👥 <b>Botdagi foydalanuvchilar:</b>\n\n"
+        f"📌 Jami ro'yxatdan o'tganlar: <b>{total} ta</b>\n"
+        f"📅 So'nggi 30 kunda faol: <b>{mau} ta</b>",
+        reply_markup=get_admin_keyboard()
     )
     await callback.answer()
 
