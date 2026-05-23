@@ -11,7 +11,7 @@ class Database:
         os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
 
     async def get_connection(self):
-        return await aiosqlite.connect(self.db_path)
+        return aiosqlite.connect(self.db_path)
 
     async def init_db(self):
         """Initialise database tables"""

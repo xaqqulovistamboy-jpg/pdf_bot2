@@ -4,7 +4,7 @@ import asyncio
 from concurrent.futures import ThreadPoolExecutor
 import img2pdf
 from PIL import Image, ImageDraw, ImageFont, ImageEnhance
-from pypdf import PdfReader, PdfMerger
+from pypdf import PdfReader, PdfWriter
 
 # Running blocking image/file operations in a thread pool to avoid blocking the main async loop
 executor = ThreadPoolExecutor(max_workers=4)
@@ -102,7 +102,7 @@ def _process_single_image(img_path: str, quality_mode: str, watermark_text: str 
 
 def _merge_pdfs_sync(pdf_paths: list[str], output_filename: str) -> str:
     """Sync PDF merge using pypdf"""
-    merger = PdfMerger()
+    merger = PdfWriter()
     try:
         for path in pdf_paths:
             merger.append(path)
@@ -121,7 +121,7 @@ def _split_pdf_sync(pdf_path: str, output_dir: str) -> str:
     try:
         with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zip_file:
             for page_idx in range(len(reader.pages)):
-                writer = PdfMerger()
+                writer = PdfWriter()
                 writer.append(pdf_path, pages=(page_idx, page_idx + 1))
                 
                 page_pdf_name = f"{base_name}_page_{page_idx + 1}.pdf"

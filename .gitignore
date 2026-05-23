@@ -10,3 +10,4 @@ env/
 temp/
 *.pdf
 *.jpg
+*.db
