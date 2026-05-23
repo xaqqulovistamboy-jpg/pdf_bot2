@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  pdf_bot:
+    build: .
+    container_name: telegram_pdf_bot
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - ./database:/app/database
+      - ./temp:/app/temp
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1

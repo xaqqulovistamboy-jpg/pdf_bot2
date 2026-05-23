@@ -2,3 +2,6 @@ aiogram>=3.4.1
 img2pdf>=0.5.1
 Pillow>=10.2.0
 python-dotenv>=1.0.1
+aiosqlite>=0.20.0
+pypdf>=4.0.0
+async-lru>=2.0.4
