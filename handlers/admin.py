@@ -67,7 +67,8 @@ async def cmd_users(message: Message, db: Database, user_settings: dict):
     await message.answer(
         f"👥 <b>Botdagi foydalanuvchilar:</b>\n\n"
         f"📌 Jami ro'yxatdan o'tganlar: <b>{total} ta</b>\n"
-        f"📅 So'nggi 30 kunda faol: <b>{mau} ta</b>"
+        f"📅 So'nggi 30 kunda faol: <b>{mau} ta</b>",
+        parse_mode="HTML"
     )
 
 @router.callback_query(F.data == "admin_users_count")
@@ -86,7 +87,8 @@ async def callback_admin_users_count(callback: CallbackQuery, db: Database, user
         f"👥 <b>Botdagi foydalanuvchilar:</b>\n\n"
         f"📌 Jami ro'yxatdan o'tganlar: <b>{total} ta</b>\n"
         f"📅 So'nggi 30 kunda faol: <b>{mau} ta</b>",
-        reply_markup=get_admin_keyboard()
+        reply_markup=get_admin_keyboard(),
+        parse_mode="HTML"
     )
     await callback.answer()
 
