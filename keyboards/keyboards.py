@@ -17,7 +17,18 @@ def get_main_keyboard() -> InlineKeyboardMarkup:
         InlineKeyboardButton(text="ℹ️ Yordam", callback_data="help_info"),
         InlineKeyboardButton(text="⚙️ Sozlamalar", callback_data="settings_menu")
     )
+    builder.row(
+        InlineKeyboardButton(text="📊 Statistika", callback_data="show_stats")
+    )
     
+    return builder.as_markup()
+
+def get_stats_keyboard() -> InlineKeyboardMarkup:
+    """Statistika oynasi uchun inline klaviatura (faqat orqaga tugmasi)"""
+    builder = InlineKeyboardBuilder()
+    builder.row(
+        InlineKeyboardButton(text="🔙 Orqaga", callback_data="main_menu")
+    )
     return builder.as_markup()
 
 def get_settings_keyboard(quality: str, watermark_text: str) -> InlineKeyboardMarkup:

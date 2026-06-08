@@ -3,7 +3,7 @@ from aiogram.filters import CommandStart, Command
 from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 from database.db import Database
-from keyboards.keyboards import get_main_keyboard, get_settings_keyboard
+from keyboards.keyboards import get_main_keyboard, get_settings_keyboard, get_stats_keyboard
 from states.states import PdfState
 
 router = Router()
@@ -50,6 +50,33 @@ async def cmd_settings(message: Message, db: Database, user_settings: dict):
         reply_markup=get_settings_keyboard(quality, watermark),
         parse_mode="Markdown"
     )
+
+@router.message(Command("stats"))
+async def cmd_stats(message: Message, db: Database):
+    stats = await db.get_stats()
+    mau = stats.get('monthly_active_users', 0)
+    total = stats.get('total_users', 0)
+    
+    text = (
+        "📊 *Bot statistikasi:*\n\n"
+        f"📅 *Oylik faol foydalanuvchilar (MAU):* {mau} ta\n"
+        f"👤 *Jami foydalanuvchilar:* {total} ta"
+    )
+    await message.answer(text, reply_markup=get_stats_keyboard(), parse_mode="Markdown")
+
+@router.callback_query(F.data == "show_stats")
+async def callback_show_stats(callback: CallbackQuery, db: Database):
+    stats = await db.get_stats()
+    mau = stats.get('monthly_active_users', 0)
+    total = stats.get('total_users', 0)
+    
+    text = (
+        "📊 *Bot statistikasi:*\n\n"
+        f"📅 *Oylik faol foydalanuvchilar (MAU):* {mau} ta\n"
+        f"👤 *Jami foydalanuvchilar:* {total} ta"
+    )
+    await callback.message.edit_text(text, reply_markup=get_stats_keyboard(), parse_mode="Markdown")
+    await callback.answer()
 
 # --- CALLBACK HANDLERS ---
 
